@@ -15,8 +15,10 @@ function render(result){
   return `
   <p>${result.title}</p>
   <a href="https://www.youtube.com/watch?v=${result.id}">
-    <img src=${result.thumbnail}></img> 
-  </a>`; 
+    <img src=${result.thumbnail}></img></a>
+    <br>
+    <a href="${result.channel}">Click here for more videos from this Channel: ${result.channelName}</a>
+  `; 
 }
 
 function displayTubeData(data){ 
