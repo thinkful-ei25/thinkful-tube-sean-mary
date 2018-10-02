@@ -5,21 +5,9 @@ const YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 const key = 'AIzaSyA9QNhgEjdZ6beCZulcwHDUdTWcItmG3c4'; 
 let next =''; 
 let prev =''; 
-
 let searchTerm ='';
 
-function getDataFromApi(search, callback){
-  const query = { q: `${search}`, key : key, part :'snippet'}; 
-  $.getJSON(YOUTUBE_SEARCH_URL, query, callback); 
-}
-
-function getNextFromApi(search, next, callback){
-  const query = { q: `${search}`, pageToken : next, key : key, part :'snippet'}; 
-  $.getJSON(YOUTUBE_SEARCH_URL, query, callback); 
-}
-
-function getPrevFromApi(search, prev, callback){
-  const query = { q: `${search}`, pageToken: prev, key : key, part :'snippet'}; 
+function getDataFromApi(query, callback){
   $.getJSON(YOUTUBE_SEARCH_URL, query, callback); 
 }
 
@@ -35,8 +23,6 @@ function render(result){
 }
 
 function displayTubeData(data){ 
-  console.log(data);
-  
   const results = data.items.map((item) => render({
     id : item.id.videoId, 
     title: item.snippet.title, 
@@ -44,7 +30,6 @@ function displayTubeData(data){
     channel : item.snippet.channelId, 
     channelName : item.snippet.channelTitle
   }));
-
 
   next = data.nextPageToken; 
   prev = data.prevPageToken; 
@@ -54,14 +39,15 @@ function displayTubeData(data){
 
 function handleNext(){ 
   $('.next').click(function(){ 
-    getNextFromApi(searchTerm, next, displayTubeData); 
+    const query = { q: `${searchTerm}`, key : key,  pageToken: next, part :'snippet'}; 
+    getDataFromApi(query, displayTubeData); 
   });
 }
 
 function handlePrev(){ 
   $('.prev').click(function(){ 
-    console.log('prev');
-    getPrevFromApi(searchTerm, prev, displayTubeData); 
+    const query = { q: `${searchTerm}`, key : key,  pageToken: prev, part :'snippet'}; 
+    getDataFromApi(query, displayTubeData); 
   });
 }
 
@@ -71,7 +57,9 @@ function watchSubmit() {
     const val = $('#search').val(); 
     searchTerm = val; 
     $('#search').val(''); 
-    getDataFromApi(val, displayTubeData); 
+    const query = { q: `${searchTerm}`, key : key, part :'snippet'}; 
+    getDataFromApi(query, displayTubeData); 
+
   });
 }
 
